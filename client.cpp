@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-02-01 03:22:25
  * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-02 06:57:34
+ * @LastEditTime: 2021-02-02 13:45:12
  */
 #include"client.h"
 #include"Error.h"
@@ -17,6 +17,8 @@
 #include<string>
 #include<fstream>
 #include <iostream>
+
+
 
 client::~client(){
     
@@ -49,7 +51,12 @@ int client::connect(){
     //将得到的端口注册到epoll中
     event_st epollevent;
     epollevent.fd=this->sockfd;
+    epollevent.id_in_client=clientManager::getInstance()->id_in_client;
+    
     this->event.m_epollEvent=epollevent;
+    this->id_in_client=clientManager::getInstance()->id_in_client;
+    clientManager::getInstance()->map_client[this->id_in_client]=this;
+    clientManager::getInstance()->id_in_client++;
 
     this->event.registerREvent();
     
@@ -60,20 +67,14 @@ int client::connect(){
     return 0;
 }
 
-int client::getMessage(){
-    std::ifstream out;
-    out.open("package");
-    std::string str;
-    while(!out.eof()){
-        getline(out,str);
-        message+=str;
-    }
-    return message.length();
+void client::setMessage(string m_message){
+    message=m_message;
 }
 
 int client::readBack(){
-    //cout<<"1m_InReq.m_msgHeader.cmd:"<<m_InReq.m_msgHeader.cmd<<endl;
-    //cout<<"client readBack";
+    //cout<<"cli==null"<<endl;
+    //cout<<"vhbskgtvb"<<endl;
+    //std::cout << "connect error" << std::endl;
     if(m_InReq.m_msgHeader.cmd==1){
         m_connectionID=m_InReq.m_msgHeader.recvfrom;
         InReq req;
@@ -108,7 +109,7 @@ int client::readBack(){
 }
 
 // int client::readTCPHead(){
-//     //cout<<"3.readData()"<<endl;
+//     cout<<"3.readData()"<<endl;
 //     int rt=read((char*)( &(m_InReq.m_msgHeader))+m_nReadOffset,m_nHeadSize-m_nReadOffset);
 //     if(rt<=0){
 //         return FAILED;

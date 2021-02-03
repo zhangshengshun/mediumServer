@@ -31,7 +31,7 @@ public:
     int initialize( int );
     int doEvent(EpollEvent*ptr,int fd, int op, unsigned int events );
     void run( Server& server);
-    void runInClient(client&);
+    void runInClient();
 private:
 
     struct epoll_event*   m_epollEvents;

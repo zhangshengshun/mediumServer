@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-01-30 10:57:48
  * @LastEditors: sueRimn
- * @LastEditTime: 2021-01-31 03:24:59
+ * @LastEditTime: 2021-02-02 12:26:35
  */
 
 #ifndef __EPOLLEVENT__
@@ -21,6 +21,7 @@ typedef struct event_st
     bool        read;
     bool        write;
     unsigned int events;
+    int id_in_client;
 
     struct event_st& operator=(event_st st){
         this->fd=st.fd;
@@ -28,6 +29,7 @@ typedef struct event_st
         this->read=st.read;
         this->write=st.write;
         this->events=st.events;
+        this->id_in_client=st.id_in_client;
         return *this;
     }
 } event_st;

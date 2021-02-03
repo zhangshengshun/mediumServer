@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-01-31 05:24:40
  * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-02 07:16:01
+ * @LastEditTime: 2021-02-03 09:11:45
  */
 #include"Connectfd.h"
 #include"Error.h"
@@ -75,6 +75,7 @@ connectfd::connectfd(Server *ser){
 
 
 int connectfd::readData(){
+    
     if(this->readTCP()<0){
         return FAILED;
     }
@@ -156,8 +157,9 @@ int connectfd::readTCP(){
     }
     
     int rt;
-    
+    //cout<<"cli==null"<<endl;
     if(m_getReadHeader){
+        //cout<<"cli==null"<<endl;
         rt=this->readTCPHead();
         if(rt<=0){
             return rt;
@@ -175,20 +177,20 @@ int connectfd::readTCP(){
 }
 
 int connectfd::readTCPHead(){
+    
     int rt=this->read((char*)( &(m_InReq.m_msgHeader))+m_nReadOffset,m_nHeadSize-m_nReadOffset);
     
     if(rt<=0){
         return FAILED;
     }
-
     m_nReadOffset+=(uint32_t)rt;
     if(m_nReadOffset==m_nHeadSize){
         m_nReadOffset=0;
         m_getReadHeader=false;
         m_nContentLength=m_InReq.m_msgHeader.legnth;
+        
         if(m_InReq.m_msgHeader.cmd==1&& m_InReq.m_msgHeader.legnth==0){
-            
-            this->readBack();
+            readBack();
             delete[] m_InReq.ioBuf;
             m_getNewPackage = true;
         }
@@ -212,7 +214,7 @@ int connectfd::readTCPContent(){
     if ( m_nContentLength == m_nReadOffset ){
         m_nReadOffset = 0;
         m_getNewPackage = true;
-        cout<<m_InReq.m_msgHeader.recvfrom<<"      "<<m_InReq.m_msgHeader.sendform<<"    "<<m_InReq.ioBuf<<endl;
+        //cout<<m_InReq.m_msgHeader.recvfrom<<"      "<<m_InReq.m_msgHeader.sendform<<"    "<<m_InReq.ioBuf<<endl;
         //读完内容后执行回调
         this->readBack();
         delete [] m_InReq.ioBuf;
@@ -225,6 +227,7 @@ int connectfd::readBack(){
     connectfd* connect=nullptr;
     //cout<<server->fdMap.size()<<endl;
     if(this->m_InReq.m_msgHeader.sendform==this->server->fdMap.size()){
+        
         connect=server->fdMap[1];
     }
     else{

@@ -4,7 +4,7 @@
  * @Author: sueRimn
  * @Date: 2021-01-31 05:22:23
  * @LastEditors: sueRimn
- * @LastEditTime: 2021-02-01 15:44:26
+ * @LastEditTime: 2021-02-02 13:39:45
  */
 #ifndef __CONNECTFD__
 #define __CONNECTFD__
@@ -73,6 +73,7 @@ class connectfd{
     int readTCPHead();
     int readTCPContent();
     virtual int readBack();
+    //virtual int read_in_client();
 
 
     //设置sockfd的属性
@@ -94,7 +95,7 @@ class connectfd{
     uint32_t m_nReadOffset;//读取的偏移量
     uint32_t m_nHeadSize;//头大小
     uint32_t m_nContentLength;//数据内容的大小
-
+    
     int m_connectionID;//ID
     bool m_getReadHeader;//是否读头
     bool m_getNewPackage;//是否是新的包

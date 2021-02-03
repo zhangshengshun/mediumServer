@@ -29,7 +29,7 @@ int Epoll::getEpollFd()const{
 
 int Epoll::initialize(int fdsize){
     m_eventSize=fdsize;
-    m_epollFd=epoll_create(1);
+    m_epollFd=epoll_create1(::EPOLL_CLOEXEC);
 
     if(m_epollFd<0){
         cout<<"Epoll:initialize error"<<endl;
@@ -69,7 +69,7 @@ void Epoll::run(Server& server){
             if(event->m_epollEvent.fd==server.nListenSocket){
                 //cout<<event->m_epollEvent.m_id<<endl;
                 server.accept(server.nListenSocket);
-                //cout<<server.fdMap.size()<<endl;
+                cout<<server.fdMap.size()<<endl;
                 continue;
             }
             connectfd *connect=server.fdMap[event->m_epollEvent.m_id];
@@ -105,23 +105,31 @@ void Epoll::run(Server& server){
     }
 }
 
-void Epoll::runInClient(client& cli){
+void Epoll::runInClient(){
     int nfds=0;
     EpollEvent *event=nullptr;
-
+    
     while(1){
+        
         nfds=::epoll_wait(m_epollFd, m_epollEvents, m_eventSize, -1);
+        
         for(int i=0;i<nfds;i++){
+            
             //cout<<"nfds:"<<nfds<<endl;
-            //event=(EpollEvent *)m_epollEvents[i].data.ptr;
+            
+            event=(EpollEvent *)m_epollEvents[i].data.ptr;
+            client * cli=clientManager::getInstance()->map_client[event->m_epollEvent.id_in_client];
+            //cout<<cli->id_in_client<<endl;
+
             if(m_epollEvents[i].events & EPOLLOUT){
-                if(cli.sendData()<=0){
-                    cli.event.closeWevent();
+                if((*cli).sendData()<=0){
+                    cli->event.closeWevent();
                 }
                 continue;
             }
             else if(m_epollEvents[i].events & EPOLLIN){
-                if(cli.readData()<0){
+                
+                if((*cli).readData()<0){
                 }
                 continue;
             }
