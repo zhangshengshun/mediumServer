@@ -11,19 +11,10 @@
 #include"EpollEvent.h"
 const int EPOLLSIZE = 1024;
 
-
-
-
 int main(){
     Epoll::getInstance()->initialize(1024);
-
-
-    
     Server server;
     server.Init();
     server.listen();
     Epoll::getInstance()->run(server);
-    
-
-    
 }

@@ -27,7 +27,7 @@ string getMessage(){
 }
 
 void openEpoll(){
-    Epoll::getInstance()->initialize(1);
+    Epoll::getInstance()->initialize(1024);
     Epoll::getInstance()->runInClient();
 }
 

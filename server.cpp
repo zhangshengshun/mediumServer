@@ -32,7 +32,7 @@ void Server::Init(){
     memset(&ServerAddress, 0, sizeof(sockaddr_in));
     ServerAddress.sin_family = AF_INET;
     ServerAddress.sin_addr.s_addr = htonl(INADDR_ANY);
-    ServerAddress.sin_port = htons(4000);
+    ServerAddress.sin_port = htons(10002);
     if(::bind(nListenSocket, (sockaddr *)&ServerAddress, sizeof(sockaddr_in)) == -1)
     {
         std::cout << "bind error" << std::endl;
@@ -83,25 +83,26 @@ int Server::accept(int fd){
         return 0;
     }
     
-    connectfd *connect=new connectfd(this);
-    connect->sockfd=clientfd;
-    connect->m_connectionID=map_id;
+    // connectfd *connect=new connectfd(this);
+    // connect->sockfd=clientfd;
+    // connect->m_connectionID=map_id;
 
-    //将ID发回给client
-    event_st epollevent;
-    epollevent.fd=clientfd;
-    epollevent.m_id=map_id;
+    // //将ID发回给client
+    // event_st epollevent;
+    // epollevent.fd=clientfd;
+    // epollevent.m_id=map_id;
 
-    connect->event.m_epollEvent=epollevent;
-    fdMap[map_id]=connect;
-    //cout<<"fdMap.size():"<<fdMap.size()<<endl;
-    map_id++;
-    //fdMap[m_id++]=connect;
-    connect->event.registerREvent();
-    connect->disableLinger();
-    connect->enableReuseaddr();
-    connect->disableNagle();
+    // connect->event.m_epollEvent=epollevent;
+    // fdMap[map_id]=connect;
+    // //cout<<"fdMap.size():"<<fdMap.size()<<endl;
+    // map_id++;
+    // //fdMap[m_id++]=connect;
+    // connect->event.registerREvent();
+    // connect->disableLinger();
+    // connect->enableReuseaddr();
+    // connect->disableNagle();
+    // connect->setNonblock();
 
-    connect->sendPackage(epollevent.m_id);
+    // connect->sendPackage(epollevent.m_id);
     return SUCCESSFUL;
 }

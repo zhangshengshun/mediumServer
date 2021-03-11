@@ -58,12 +58,13 @@ int client::connect(){
     clientManager::getInstance()->map_client[this->id_in_client]=this;
     clientManager::getInstance()->id_in_client++;
 
+    this->setNonblock();
+    this->disableLinger();
+    this->enableReuseaddr();
+    this->disableNagle();
+    
     this->event.registerREvent();
     
-    
-    disableLinger();
-    enableReuseaddr();
-    disableNagle();
     return 0;
 }
 

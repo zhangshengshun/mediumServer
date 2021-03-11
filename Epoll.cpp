@@ -69,38 +69,38 @@ void Epoll::run(Server& server){
             if(event->m_epollEvent.fd==server.nListenSocket){
                 //cout<<event->m_epollEvent.m_id<<endl;
                 server.accept(server.nListenSocket);
-                cout<<server.fdMap.size()<<endl;
+                //cout<<server.fdMap.size()<<endl;
                 continue;
             }
-            connectfd *connect=server.fdMap[event->m_epollEvent.m_id];
-            if(connect==nullptr){
-                cout<<"connect == NULL"<<endl;
-                continue;
-            }
-            else if(m_epollEvents[i].events & EPOLLOUT){
+            // connectfd *connect=server.fdMap[event->m_epollEvent.m_id];
+            // if(connect==nullptr){
+            //     cout<<"connect == NULL"<<endl;
+            //     continue;
+            // }
+            // else if(m_epollEvents[i].events & EPOLLOUT){
 
-                if(connect->sendData()<=0){
-                    connect->event.closeWevent();
-                }
-                continue;
-            }
-            else if(m_epollEvents[i].events & EPOLLIN){
-                if(connect->readData()<0){
+            //     if(connect->sendData()<=0){
+            //         connect->event.closeWevent();
+            //     }
+            //     continue;
+            // }
+            // else if(m_epollEvents[i].events & EPOLLIN){
+            //     if(connect->readData()<0){
                     
-                }
-                continue;
-            }
-            else if(m_epollEvents[i].events &EPOLLERR || m_epollEvents[i].events & EPOLLHUP){
-                cout<<"EPOLLERR"<<endl;
-                connect->releaseSendBuffer();
-                if(connect->m_InReq.ioBuf!=nullptr){
-                    delete[] connect->m_InReq.ioBuf;
-                    connect->m_InReq.ioBuf=nullptr;
-                }
-                memset(&connect->m_InReq.m_msgHeader,0,HEADER_SIZE);
-                connect->server->fdMap.erase(event->m_epollEvent.m_id);
-                continue;
-            }
+            //     }
+            //     continue;
+            // }
+            // else if(m_epollEvents[i].events &EPOLLERR || m_epollEvents[i].events & EPOLLHUP){
+            //     cout<<"EPOLLERR"<<endl;
+            //     connect->releaseSendBuffer();
+            //     if(connect->m_InReq.ioBuf!=nullptr){
+            //         delete[] connect->m_InReq.ioBuf;
+            //         connect->m_InReq.ioBuf=nullptr;
+            //     }
+            //     memset(&connect->m_InReq.m_msgHeader,0,HEADER_SIZE);
+            //     connect->server->fdMap.erase(event->m_epollEvent.m_id);
+            //     continue;
+            // }
         }
     }
 }
